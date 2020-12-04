@@ -4,7 +4,7 @@ package gosnowflake
 
 import (
 	"context"
-	"database/sql/driver"
+	sqlDriver "database/sql/driver"
 	"reflect"
 	"testing"
 )
@@ -14,11 +14,11 @@ type noopTestDriver struct {
 	conn   *snowflakeConn
 }
 
-func (d noopTestDriver) Open(_ string) (driver.Conn, error) {
+func (d noopTestDriver) Open(_ string) (sqlDriver.Conn, error) {
 	return nil, nil
 }
 
-func (d noopTestDriver) OpenWithConfig(_ context.Context, config Config) (driver.Conn, error) {
+func (d noopTestDriver) OpenWithConfig(_ context.Context, config Config) (sqlDriver.Conn, error) {
 	d.config = config
 	return d.conn, nil
 }

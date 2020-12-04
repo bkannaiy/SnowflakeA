@@ -4,28 +4,28 @@ package gosnowflake
 
 import (
 	"context"
-	"database/sql/driver"
+	sqlDriver "database/sql/driver"
 )
 
-// snowflakeDriver is the interface for a Snowflake driver
-type snowflakeDriver interface {
-	Open(dsn string) (driver.Conn, error)
-	OpenWithConfig(ctx context.Context, config Config) (driver.Conn, error)
+// driver is the interface for a Snowflake driver
+type driver interface {
+	Open(dsn string) (sqlDriver.Conn, error)
+	OpenWithConfig(ctx context.Context, config Config) (sqlDriver.Conn, error)
 }
 
 // Connector creates connections using the Snowflake driver and config.
 type Connector struct {
-	driver snowflakeDriver
+	driver driver
 	cfg    Config
 }
 
 // NewConnector creates a new connector with the given driver and config.
-func NewConnector(driver snowflakeDriver, config Config) Connector {
+func NewConnector(driver driver, config Config) Connector {
 	return Connector{driver, config}
 }
 
 // Connect creates a new connection using the underlying driver.
-func (t Connector) Connect(ctx context.Context) (driver.Conn, error) {
+func (t Connector) Connect(ctx context.Context) (sqlDriver.Conn, error) {
 	cfg := t.cfg
 	err := fillMissingConfigParameters(&cfg)
 	if err != nil {
@@ -35,6 +35,6 @@ func (t Connector) Connect(ctx context.Context) (driver.Conn, error) {
 }
 
 // Driver returns the underlying driver.
-func (t Connector) Driver() driver.Driver {
+func (t Connector) Driver() sqlDriver.Driver {
 	return t.driver
 }
